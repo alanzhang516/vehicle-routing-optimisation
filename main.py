@@ -1,14 +1,20 @@
 import itertools
 import pandas as pd
-import numpy as np
 
 duration = pd.read_csv('Data/FoodstuffsDurations2026.csv', index_col=0)
+demand = pd.read_csv('Data/cleaned_demand.csv', index_col=0)
+
+debug = True
+final = 0
+mid = 0
+demand_debug = 0
+
 
 capacity = 16
-max_time = 3.5 * 60 * 60
+max_time = 6 * 60 * 60
 pallet_unload_time = 18 * 60
 max_route_size = 4
-time_between = 0.5 * 60 * 60
+time_between = 3 * 60 * 60
 all_stores = duration.index.tolist()
 all_stores.remove("Warehouse")
 
@@ -16,16 +22,27 @@ all_stores.remove("Warehouse")
 # print(len(all_stores))
 
 def calculate_route_time(orders):
+    global mid, final
     total_time = 0
     total_time += duration.loc["Warehouse", orders[0]]
 
     for i in range(len(orders)-1):
         total_time += duration.loc[orders[i], orders[i+1]]
+        total_time += demand.loc[orders[i], "Weekday mean"] * pallet_unload_time
 
         if total_time > max_time:
+            if debug:
+                mid += 1
             return None
 
     total_time += duration.loc[orders[-1], "Warehouse"]
+    total_time += demand.loc[orders[-1], "Weekday mean"] * pallet_unload_time
+
+    if total_time > max_time:
+        if debug:
+            final += 1
+        return None
+
     return total_time
 
 def calculate_neighbours(anchor):
@@ -35,6 +52,7 @@ def calculate_neighbours(anchor):
     return neighbours
 
 def brute_force_route(anchor):
+    global demand_debug
     neighbours = calculate_neighbours(anchor)
     if 'Warehouse' in neighbours:
         neighbours.remove('Warehouse')
@@ -45,13 +63,27 @@ def brute_force_route(anchor):
     for r in range(1, route_length + 1):
 
         for perm in itertools.permutations(neighbours, r):
+
             if anchor not in perm:
+                continue
+
+            route_demand = 0
+            feasible = True
+
+            for store in perm:
+                route_demand += demand.loc[store, "Weekday mean"]
+                if route_demand > capacity:
+                    demand_debug += 1
+                    feasible = False
+                    break
+
+            if not feasible:
                 continue
 
             t = calculate_route_time(perm)
 
             if t is not None:
-                output.append([perm, t])
+                output.append([perm, t, route_demand])
 
     return output
 
@@ -60,20 +92,21 @@ def generate_all_routes(store_names):
 
     for anchor in store_names:
         candidates = brute_force_route(anchor)
-        for perm, t in candidates:
+        for perm, time, total_demand in candidates:
             if perm not in all_routes:
-                all_routes[perm] = t
+                all_routes[perm] = [time, total_demand]
 
-    return [[perm, t] for perm, t in all_routes.items()]
+    return [[perm, time, total_demand] for perm, [time, total_demand] in all_routes.items()]
 
 def save_routes_to_csv(routes, filename="routes.csv"):
     data = []
-    for perm, t in routes:
+    for perm, time, total_demand in routes:
         data.append({
             "Route": " -> ".join(perm),
             "Stops": list(perm),
-            "Duration": t,
-            "Number of Stops": len(perm)
+            "Duration": time,
+            "Number of Stops": len(perm),
+            "Total Demand": total_demand
         })
 
     output = pd.DataFrame(data)
@@ -82,3 +115,4 @@ def save_routes_to_csv(routes, filename="routes.csv"):
 
 all_routes = generate_all_routes(all_stores)
 save_routes_to_csv(all_routes)
+print(f"Failed due to Time constraint: {mid + final} out of which {final} were due to the return trip from the final trip to the warehouse. {demand_debug} failed due to the demand constraint")
