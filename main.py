@@ -10,10 +10,10 @@ mid = 0
 demand_debug = 0
 
 capacity = 16
-max_time = 5.5 * 60 * 60
+max_time = 6 * 60 * 60
 pallet_unload_time = 18 * 60
 max_route_size = 5
-time_between = 2 * 60 * 60
+time_between = 2.5 * 60 * 60
 all_stores = duration.index.tolist()
 all_stores.remove("Warehouse")
 

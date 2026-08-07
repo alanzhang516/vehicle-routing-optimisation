@@ -110,14 +110,14 @@ def createLP(routeNames, ownedCosts, leasedCosts, patterns, demands):
     routes = makeDict([storesList, routeNames], routes, 0)
 
     # Create decision variables for each route using an owned truck and a hired truck
-    routeNormal = LpVariable.dicts('Route-Owned', routeNames, 0, 1, LpBinary)
+    routeNormal = LpVariable.dicts('Route_Owned', routeNames, 0, 1, LpBinary)
     routeLinfox = LpVariable.dicts('Route_Leased', routeNames, 0, 1, LpBinary)
 
     # Create decision variable for if hired trucks are required
     truckHire = LpVariable('Truck_Hire', 0, 1, LpBinary)
 
     # Set up LP
-    prob = LpProblem('Routing Problem Test', LpMinimize)
+    prob = LpProblem('Routing_Problem_Test', LpMinimize)
 
     # Objective function
     prob += lpSum(routeNormal[i] * ownedCosts[i] + routeLinfox[i] * leasedCosts[i] for i in routeNames), 'Routing Cost'
@@ -130,10 +130,10 @@ def createLP(routeNames, ownedCosts, leasedCosts, patterns, demands):
     prob += lpSum(routeNormal[i] for i in routeNames) <= numberTrucksAvailable, 'Number of Trucks'
 
     # Constraint to prevent hiring trucks before we run out
-    prob += lpSum(routeLinfox[i] for i in routeNames) - 99999 * truckHire <= 0, 'Hired Trucks Bound'
+    # prob += lpSum(routeLinfox[i] for i in routeNames) - 99999 * truckHire <= 0, 'Hired Trucks Bound'
 
     # Constraint to check if we have used all our trucks
-    prob += numberTrucksAvailable * truckHire - lpSum(routeNormal[i] for i in routeNames) <= 0, 'Hired Trucks Toggle'
+    # prob += numberTrucksAvailable * truckHire - lpSum(routeNormal[i] for i in routeNames) <= 0, 'Hired Trucks Toggle'
 
     # Constraint to prevent a route using both an owned truck and hired truck
     for i in routeNames:
@@ -167,7 +167,7 @@ def saveToCSV(solution, fileName = 'LpSolution.csv'):
 
     # Loop through all decision variables
     for v in solution.variables():
-        if v.varValue == 1:
+        if v.varValue is not None and v.varValue > 0.5:
             # If the route is used, split the name to retrieve the route number
             name = v.name.split('_')
 

@@ -1,38 +1,37 @@
 Route,Truck
-New World Devonport -> Four Square Remuera,Owned
-New World Metro Queen St -> Four Square Britomart -> New World Eastridge,Owned
+Pak 'n Save Wairau Road -> New World Metro Shore City,Owned
+New World Botany -> Four Square Remuera,Owned
+Four Square Lancaster -> New World Browns Bay,Owned
+New World Albany -> Four Square Torbay,Owned
+Four Square Ellerslie -> New World Devonport,Owned
+Four Square Britomart -> New World Metro Queen St -> New World Eastridge,Owned
 New World Green Bay,Owned
-New World Hobsonville,Owned
-Four Square Hobsonville -> New World Milford,Owned
+New World Milford -> Four Square Glen Eden,Owned
 New World Mt Albert,Owned
-New World Albany -> Four Square Pakuranga Heights,Owned
 New World Mt Roskill,Owned
 New World New Lynn,Owned
 New World Newmarket,Owned
-New World Ormiston,Owned
-New World Papakura -> Four Square Ellerslie,Owned
+New World Hobsonville,Owned
+New World Southmall -> New World Ormiston,Owned
+New World Papakura,Owned
 New World Papatoetoe,Owned
-New World Howick -> Four Square Onehunga,Owned
+New World Birkenhead -> New World Point Chevalier,Owned
 New World Remuera -> New World Stonefields,Owned
-New World Southmall,Owned
-New World Long Bay -> Four Square Torbay,Owned
 New World Victoria Park,Owned
-Pak 'n Save Botany,Owned
+Pak 'n Save Albany,Owned
+Pak 'n Save Botany -> Four Square Cockle Bay,Owned
 Pak 'n Save Clendon,Owned
-Pak 'n Save Glen Innes,Owned
-Pak 'n Save Highland Park -> Four Square Cockle Bay,Owned
-Pak 'n Save Henderson -> Four Square Glen Eden,Owned
+Four Square Eden Terrace -> Pak 'n Save Glen Innes,Owned
+Pak 'n Save Highland Park,Owned
+Pak 'n Save Henderson,Owned
 Four Square Fair Price Henderson -> Pak 'n Save Lincoln Road,Owned
-Pak 'n Save Mangere,Owned
-Four Square Eden Terrace -> Pak 'n Save Manukau,Owned
+Pak 'n Save Mangere -> Four Square Botany Junction,Owned
+Pak 'n Save Manukau,Owned
 Pak 'n Save Mt Albert,Owned
 Pak 'n Save Ormiston,Owned
 Pak 'n Save Papakura,Owned
 Four Square St Heliers -> Pak 'n Save Royal Oak,Owned
 Pak 'n Save Sylvia Park,Owned
-Pak 'n Save Wairau Road -> Four Square Lancaster,Owned
 Pak 'n Save Westgate,Owned
-New World Birkenhead -> New World Point Chevalier,Owned
-Pak 'n Save Albany -> New World Metro Shore City,Owned
-Four Square Botany Junction -> New World Botany,Owned
-New World Browns Bay,Owned
+New World Howick -> Four Square Pakuranga Heights -> Four Square Onehunga,Owned
+Four Square Hobsonville -> New World Long Bay,Owned
