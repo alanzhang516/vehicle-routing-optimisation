@@ -2,19 +2,18 @@ import itertools
 import pandas as pd
 
 duration = pd.read_csv('Data/FoodstuffsDurations2026.csv', index_col=0)
-demand = pd.read_csv('Data/cleaned_demand.csv', index_col=0)
+demand = pd.read_csv('Data/PercentileDemand.csv', index_col=0)
 
 debug = True
 final = 0
 mid = 0
 demand_debug = 0
 
-
 capacity = 16
-max_time = 6 * 60 * 60
+max_time = 5.5 * 60 * 60
 pallet_unload_time = 18 * 60
-max_route_size = 4
-time_between = 3 * 60 * 60
+max_route_size = 5
+time_between = 2 * 60 * 60
 all_stores = duration.index.tolist()
 all_stores.remove("Warehouse")
 
@@ -28,7 +27,7 @@ def calculate_route_time(orders):
 
     for i in range(len(orders)-1):
         total_time += duration.loc[orders[i], orders[i+1]]
-        total_time += demand.loc[orders[i], "Weekday mean"] * pallet_unload_time
+        total_time += demand.loc[orders[i], "Weekday P75"] * pallet_unload_time
 
         if total_time > max_time:
             if debug:
@@ -36,7 +35,7 @@ def calculate_route_time(orders):
             return None
 
     total_time += duration.loc[orders[-1], "Warehouse"]
-    total_time += demand.loc[orders[-1], "Weekday mean"] * pallet_unload_time
+    total_time += demand.loc[orders[-1], "Weekday P75"] * pallet_unload_time
 
     if total_time > max_time:
         if debug:
@@ -61,30 +60,19 @@ def brute_force_route(anchor):
     output = []
 
     for r in range(1, route_length + 1):
-
-        for perm in itertools.permutations(neighbours, r):
-
-            if anchor not in perm:
+        for combo in itertools.combinations(neighbours, r):
+            if anchor not in combo:
                 continue
 
-            route_demand = 0
-            feasible = True
-
-            for store in perm:
-                route_demand += demand.loc[store, "Weekday mean"]
-                if route_demand > capacity:
-                    demand_debug += 1
-                    feasible = False
-                    break
-
-            if not feasible:
+            route_demand = sum(demand.loc[store, "Weekday P75"] for store in combo)
+            if route_demand > capacity:
+                demand_debug += 1
                 continue
 
-            t = calculate_route_time(perm)
-
-            if t is not None:
-                output.append([perm, t, route_demand])
-
+            for perm in itertools.permutations(combo):
+                t = calculate_route_time(perm)
+                if t is not None:
+                    output.append([perm, t, route_demand])
     return output
 
 def generate_all_routes(store_names):
