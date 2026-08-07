@@ -37,7 +37,7 @@ def prepCosts(fileRoutes):
     routes['Duration'] =routes.Duration / 3600
 
     # Add column Cost, for the cost of running the route with an owned truck
-    routes['Cost'] = np.where(routes.Duration <= hrsB4Overtime, routes.Duration * truckCost, (routes.Duration - hrsB4Overtime) * overtimeCost + hrsB4Overtime * truckCost)
+    routes['Cost'] = np.where(routes.Duration <= hrsB4Overtime, routes.Duration * truckCost, np.ceil(routes.Duration - hrsB4Overtime) * overtimeCost + hrsB4Overtime * truckCost)
 
     # Add column LinfoxCost, for the cost of running the route with a leased truck
     routes['LinfoxCost'] = hireCost * np.ceil(routes.Duration / 2)
