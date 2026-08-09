@@ -27,7 +27,7 @@ def calculate_route_time(orders):
 
     for i in range(len(orders)-1):
         total_time += duration.loc[orders[i], orders[i+1]]
-        total_time += demand.loc[orders[i], "Weekday P75"] * pallet_unload_time
+        total_time += demand.loc[orders[i], "Weekday P75 (rounded)"] * pallet_unload_time
 
         if total_time > max_time:
             if debug:
@@ -35,7 +35,7 @@ def calculate_route_time(orders):
             return None
 
     total_time += duration.loc[orders[-1], "Warehouse"]
-    total_time += demand.loc[orders[-1], "Weekday P75"] * pallet_unload_time
+    total_time += demand.loc[orders[-1], "Weekday P75 (rounded)"] * pallet_unload_time
 
     if total_time > max_time:
         if debug:
@@ -64,7 +64,7 @@ def brute_force_route(anchor):
             if anchor not in combo:
                 continue
 
-            route_demand = sum(demand.loc[store, "Weekday P75"] for store in combo)
+            route_demand = sum(demand.loc[store, "Weekday P75 (rounded)"] for store in combo)
             if route_demand > capacity:
                 demand_debug += 1
                 continue
