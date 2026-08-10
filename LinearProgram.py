@@ -9,7 +9,7 @@ numberTrucksAvailable = 40 # Number of trucks able to send out in a day without 
 truckCost = 220 # Cost of operating an owned truck ($ / hr)
 overtimeCost = 310 # Cost of overtime for owned trucks ($ / hr)
 hireCost = 1400 # Cost of hiring a truck from Linfox for 2 hours
-hrsB4Overtime = 3.5 # Time each owned truck is available for without overtime
+hrsB4Overtime = 4.0 # Time each owned truck is available for without overtime
 
 
 
