@@ -83,9 +83,14 @@ def prepPatterns(fileStores, routes):
     # Impossible to fulfill constraints would be created if a store is not visited by any route
     for store in stores.keys():
 
-        if np.sum(stores[store]) == 0:
-            temp.pop(store)
-            demands.pop(store)
+        missing_stores = [
+            store
+            for store, route_visits in stores.items()
+            if not any(route_visits)
+        ]
+
+        if missing_stores:
+            raise ValueError(f"No feasible route generated for: {', '.join(missing_stores)}")
 
     stores = temp
     return stores, demands
