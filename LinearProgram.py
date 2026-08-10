@@ -144,7 +144,7 @@ def createLP(routeNames, ownedCosts, leasedCosts, patterns, demands):
     for i in routeNames:
         prob += routeNormal[i] + routeLinfox[i] <= 1, f'One truck per route {i}'
 
-    prob.writeLP('Route.lp')
+    prob.writeLP('Route_base.lp')
 
     prob.solve()
 
@@ -153,7 +153,102 @@ def createLP(routeNames, ownedCosts, leasedCosts, patterns, demands):
     print('Routing Costs = ', value(prob.objective))
 
     # Save solution as CSV
-    saveToCSV(prob)
+    saveToCSV(prob,"LpSolution_base.csv")
+
+def createLPshedding(routeNames, ownedCosts, leasedCosts, patterns, demands):
+    '''
+    Create and solve the linear program considering the 20% of stores that can have demand shed
+
+    :param routeNames: Names of routes
+    :param ownedCosts: cost of operating route with an owned truck
+    :param leasedCosts: cost of operating route with a leased truck
+    :param patterns: dictionary containing the patterns
+    :param demands: dictionary containing the demands
+
+    '''
+    # Create a list of the stores involved
+    storesList = list(demands.keys())
+
+    # Set penalty for shedding demand based on type of store
+    shedPenalty = {}
+    for store in storesList:
+        if "Pak 'n Save" in store:
+            shedPenalty[store] = 1500
+        else:
+            shedPenalty[store] = 800
+    # Create a list of all the stores routing involvements
+    routes = list(patterns.values())
+
+    # Convert to a dictionary
+    routes = makeDict([storesList, routeNames], routes, 0)
+
+    # Create decision variables for each route using an owned truck and a hired truck
+    routeNormal = LpVariable.dicts('Route_Owned', routeNames, 0, 1, LpBinary)
+    routeLinfox = LpVariable.dicts('Route_Leased', routeNames, 0, 1, LpBinary)
+
+    #Create binary decision variables for each store to determine whether demand is 'shed'
+    shedStore = LpVariable.dicts('Store_Shed', storesList,0,1,LpBinary)
+
+    # Create decision variable for if hired trucks are required
+    truckHire = LpVariable('Truck_Hire', 0, 1, LpBinary)
+
+    # Set up LP
+    prob = LpProblem('Routing_Problem_Test', LpMinimize)
+
+    # Objective function
+    prob += (lpSum(routeNormal[i] * ownedCosts[i] + routeLinfox[i] * leasedCosts[i] for i in routeNames)
+             + lpSum(shedStore[i] * shedPenalty[i] for i in storesList)), 'Routing Cost'
+
+    # Constraints so each store is visited once unless demand shed
+    for i in storesList:
+        prob += (lpSum((routeNormal[j] + routeLinfox[j]) * routes[i][j] for j in routeNames) + shedStore[i]
+                 == demands[i], f'Ensure or shed {i}')
+
+    # Constraint so we don't use more trucks than we own
+    prob += lpSum(routeNormal[i] for i in routeNames) <= numberTrucksAvailable, 'Number of Trucks'
+
+    # Constraint to prevent hiring trucks before we run out
+    # prob += lpSum(routeLinfox[i] for i in routeNames) - 99999 * truckHire <= 0, 'Hired Trucks Bound'
+
+    # Constraint to check if we have used all our trucks
+    # prob += numberTrucksAvailable * truckHire - lpSum(routeNormal[i] for i in routeNames) <= 0, 'Hired Trucks Toggle'
+
+    # Constraint to prevent a route using both an owned truck and hired truck
+    for i in routeNames:
+        prob += routeNormal[i] + routeLinfox[i] <= 1, f'One truck per route {i}'
+
+    # Constraint to limit only 20% of stores have demand shed
+    maxStoresShed = int(np.floor(0.2 * len(storesList)))
+    prob += lpSum(shedStore[i] for i in storesList) <= maxStoresShed, 'Max stores shed'
+
+    prob.writeLP('Route_Shedding.lp')
+
+    prob.solve()
+
+    print('Status:', LpStatus[prob.status])
+
+    print('Total Costs = ', value(prob.objective))
+
+    print("\nStores shed:")
+
+    for i in storesList:
+        if shedStore[i].varValue is not None and shedStore[i].varValue > 0.5:
+            print(i)
+    # Save what stores had demand shed to csv
+    shed_data = []
+    for i in storesList:
+        if shedStore[i].varValue is not None and shedStore[i].varValue > 0.5:
+            shed_data.append({
+                "Store": i
+            })
+    shed_output = pd.DataFrame(shed_data)
+    shed_output.to_csv(
+        "ShedStores.csv",
+        index=False
+    )
+
+    # Save overall solution as CSV
+    saveToCSV(prob,"LpSolution_shedding.csv")
 
 def saveToCSV(solution, fileName = 'LpSolution.csv'):
 
@@ -203,4 +298,5 @@ ownedCosts = routes.Cost.to_dict()
 leasedCosts = routes.LinfoxCost.to_dict()
 
 createLP(names, ownedCosts, leasedCosts, stores, demands)
+createLPshedding(names, ownedCosts, leasedCosts, stores, demands)
 
