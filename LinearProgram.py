@@ -55,7 +55,8 @@ def prepPatterns(fileStores, routes):
     '''
     # Read list of stores
     df = pd.read_csv(fileStores)
-
+    #remove Warehouse from store delivery constraints
+    df = df[df["Supermarket"] != "Warehouse"]
     # Set index for dictionary conversion
     df = df.set_index('Supermarket')
     # Add columns for use later
