@@ -26,7 +26,7 @@ capacity = 16
 max_time = 6 * 60 * 60
 pallet_unload_time = 18 * 60
 max_route_size = 5
-time_between = 2.5 * 60 * 60
+time_between = (1/3) * 60 * 60
 
 demand_column = "Saturday P75 (rounded)"
 
