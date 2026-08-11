@@ -1,34 +1,33 @@
-Route,Truck
-Four Square Torbay -> New World Metro Shore City,Owned
-New World Eastridge,Owned
-Four Square Britomart -> New World Metro Queen St -> Four Square Eden Terrace,Owned
-New World Green Bay,Owned
-New World Mt Albert,Owned
-New World Mt Roskill,Owned
-New World New Lynn,Owned
-New World Birkenhead,Owned
-Four Square Onehunga -> New World Newmarket,Owned
-New World Hobsonville,Owned
-New World Ormiston,Owned
-New World Papatoetoe,Owned
-New World Point Chevalier,Owned
-New World Remuera,Owned
-New World Southmall,Owned
-New World Howick -> New World Stonefields,Owned
-New World Victoria Park,Owned
-Four Square Hobsonville -> Pak 'n Save Albany,Owned
-Pak 'n Save Botany -> Four Square St Heliers,Owned
-Four Square Botany Junction -> Pak 'n Save Clendon,Owned
-Four Square Pakuranga Heights -> Pak 'n Save Glen Innes,Owned
-Pak 'n Save Highland Park -> Four Square Lancaster,Owned
-Pak 'n Save Henderson,Owned
-Four Square Fair Price Henderson -> Pak 'n Save Lincoln Road,Owned
-Pak 'n Save Mangere,Owned
-Four Square Ellerslie -> Pak 'n Save Manukau,Owned
-Pak 'n Save Mt Albert,Owned
-Pak 'n Save Ormiston,Owned
-Pak 'n Save Papakura,Owned
-Pak 'n Save Royal Oak,Owned
-Four Square Cockle Bay -> Pak 'n Save Sylvia Park,Owned
-Four Square Glen Eden -> Pak 'n Save Wairau Road,Owned
-Four Square Remuera -> Pak 'n Save Westgate,Owned
+Route,Truck,Objective
+Four Square Torbay -> New World Metro Shore City,Owned,39220.26699999999
+New World Remuera -> New World Eastridge,Owned,39220.26699999999
+Four Square Onehunga -> New World Metro Queen St -> Four Square Britomart,Owned,39220.26699999999
+New World Green Bay,Owned,39220.26699999999
+New World Mt Albert,Owned,39220.26699999999
+New World Mt Roskill,Owned,39220.26699999999
+New World New Lynn,Owned,39220.26699999999
+New World Newmarket,Owned,39220.26699999999
+New World Birkenhead,Owned,39220.26699999999
+New World Hobsonville,Owned,39220.26699999999
+New World Ormiston,Owned,39220.26699999999
+New World Papatoetoe,Owned,39220.26699999999
+Four Square Eden Terrace -> New World Point Chevalier,Owned,39220.26699999999
+New World Southmall,Owned,39220.26699999999
+New World Stonefields,Owned,39220.26699999999
+New World Victoria Park,Owned,39220.26699999999
+Pak 'n Save Albany -> Four Square Lancaster,Owned,39220.26699999999
+Four Square Cockle Bay -> Pak 'n Save Botany,Owned,39220.26699999999
+Pak 'n Save Clendon,Owned,39220.26699999999
+Pak 'n Save Glen Innes -> Four Square St Heliers,Owned,39220.26699999999
+Four Square Remuera -> Pak 'n Save Highland Park,Owned,39220.26699999999
+Pak 'n Save Henderson,Owned,39220.26699999999
+Four Square Glen Eden -> Pak 'n Save Lincoln Road,Owned,39220.26699999999
+Pak 'n Save Mangere,Owned,39220.26699999999
+Four Square Ellerslie -> Pak 'n Save Manukau,Owned,39220.26699999999
+Pak 'n Save Mt Albert,Owned,39220.26699999999
+Four Square Botany Junction -> Pak 'n Save Ormiston,Owned,39220.26699999999
+Pak 'n Save Papakura,Owned,39220.26699999999
+Pak 'n Save Royal Oak,Owned,39220.26699999999
+Four Square Pakuranga Heights -> Pak 'n Save Sylvia Park,Owned,39220.26699999999
+Pak 'n Save Wairau Road -> Four Square Fair Price Henderson,Owned,39220.26699999999
+Pak 'n Save Westgate -> Four Square Hobsonville,Owned,39220.26699999999

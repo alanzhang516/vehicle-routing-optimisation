@@ -145,7 +145,7 @@ def createLP(routeNames, ownedCosts, leasedCosts, patterns, demands):
     for i in routeNames:
         prob += routeNormal[i] + routeLinfox[i] <= 1, f'One truck per route {i}'
 
-    prob.writeLP('Route_base_sat.lp')
+    prob.writeLP('Route_base.lp')
 
     prob.solve()
 
@@ -154,7 +154,7 @@ def createLP(routeNames, ownedCosts, leasedCosts, patterns, demands):
     print('Routing Costs = ', value(prob.objective))
 
     # Save solution as CSV
-    saveToCSV(prob,"LpSolution_base_sat.csv")
+    saveToCSV(prob, value(prob.objective), "LpSolution_base.csv")
 
 def createLPshedding(routeNames, ownedCosts, leasedCosts, patterns, demands):
     '''
@@ -222,7 +222,7 @@ def createLPshedding(routeNames, ownedCosts, leasedCosts, patterns, demands):
     maxStoresShed = int(np.floor(0.2 * len(storesList)))
     prob += lpSum(shedStore[i] for i in storesList) <= maxStoresShed, 'Max stores shed'
 
-    prob.writeLP('Route_Shedding_sat.lp')
+    prob.writeLP('Route_Shedding.lp')
 
     prob.solve()
 
@@ -244,19 +244,21 @@ def createLPshedding(routeNames, ownedCosts, leasedCosts, patterns, demands):
             })
     shed_output = pd.DataFrame(shed_data)
     shed_output.to_csv(
-        "ShedStores_sat.csv",
+        "ShedStores.csv",
         index=False
     )
 
     # Save overall solution as CSV
-    saveToCSV(prob,"LpSolution_shedding_sat.csv")
+    saveToCSV(prob,value(prob.objective),"LpSolution_shedding.csv")
 
-def saveToCSV(solution, fileName = 'LpSolution.csv'):
+def saveToCSV(solution, objectiveValue, fileName = 'LpSolution.csv'):
 
     '''
     Saves the output of the linear program to a CSV file
 
     :param solution: The solved linear program
+
+    :param objectiveValue: the cost of the optimal solution
 
     :param fileName: name of the file to save to
 
@@ -286,11 +288,11 @@ def saveToCSV(solution, fileName = 'LpSolution.csv'):
         })
 
     output = pd.DataFrame(data)
-
+    output["Objective"] = objectiveValue
     output.to_csv(fileName, index=False)
 
 
-routes = prepCosts('Data/saturday_routes.csv')
+routes = prepCosts('routes.csv')
 stores, demands = prepPatterns('Data/FoodstuffsLocations.csv', routes)
 
 # Get the names and costs of each route
