@@ -154,7 +154,7 @@ def createLP(routeNames, ownedCosts, leasedCosts, patterns, demands):
     print('Routing Costs = ', value(prob.objective))
 
     # Save solution as CSV
-    saveToCSV(prob, value(prob.objective), "LpSolution_base.csv")
+    saveToCSV(prob, value(prob.objective), "WeekdaySolution/LpSolution_base.csv")
 
 def createLPshedding(routeNames, ownedCosts, leasedCosts, patterns, demands):
     '''
@@ -249,7 +249,7 @@ def createLPshedding(routeNames, ownedCosts, leasedCosts, patterns, demands):
     )
 
     # Save overall solution as CSV
-    saveToCSV(prob,value(prob.objective),"LpSolution_shedding.csv")
+    saveToCSV(prob, value(prob.objective), "WeekdaySolution/LpSolution_shedding.csv")
 
 def saveToCSV(solution, objectiveValue, fileName = 'LpSolution.csv'):
 
@@ -293,7 +293,7 @@ def saveToCSV(solution, objectiveValue, fileName = 'LpSolution.csv'):
 
 
 routes = prepCosts('routes.csv')
-stores, demands = prepPatterns('Data/FoodstuffsLocations.csv', routes)
+stores, demands = prepPatterns('InputCSV/FoodstuffsLocations.csv', routes)
 
 # Get the names and costs of each route
 names = list(routes.Route.to_dict().keys())

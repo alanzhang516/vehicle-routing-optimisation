@@ -15,8 +15,8 @@ from pulp import (
 
 
 # Input and output files
-ROUTES_FILE = "routes.csv"
-STORES_FILE = "Data/FoodstuffsLocations.csv"
+ROUTES_FILE = "WeekdaySolution/routes.csv"
+STORES_FILE = "InputCSV/FoodstuffsLocations.csv"
 LP_FILE = "FuelReduction.lp"
 ROUTE_SOLUTION_FILE = "FuelReductionSolution.csv"
 SKIPPED_STORES_FILE = "FuelReductionSkippedStores.csv"

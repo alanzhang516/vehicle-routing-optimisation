@@ -1,8 +1,8 @@
 import itertools
 import pandas as pd
 
-duration = pd.read_csv('Data/FoodstuffsDurations2026.csv', index_col=0)
-demand = pd.read_csv('Data/PercentileDemand.csv', index_col=0)
+duration = pd.read_csv('../InputCSV/FoodstuffsDurations2026.csv', index_col=0)
+demand = pd.read_csv('../InputCSV/PercentileDemand.csv', index_col=0)
 
 debug = True
 final = 0

@@ -1,0 +1,94 @@
+route_id,leg_idx,from_stop,to_stop,distance_m,duration_s
+0,0,Warehouse,New World Albany,34999.1,2679.8
+0,1,New World Albany,Warehouse,35194.6,2676.6
+1,0,Warehouse,New World Botany,26679.1,2425.7
+1,1,New World Botany,Warehouse,27348.9,2366.0
+2,0,Warehouse,New World Browns Bay,37776.3,2903.6
+2,1,New World Browns Bay,Warehouse,37641.7,2881.2
+3,0,Warehouse,New World Devonport,28321.3,2832.2
+3,1,New World Devonport,Warehouse,27886.1,2675.9
+4,0,Warehouse,New World Remuera,17993.5,1639.7
+4,1,New World Remuera,New World Eastridge,5118.6,683.8
+4,2,New World Eastridge,Warehouse,20898.4,1956.4
+5,0,Warehouse,Four Square Onehunga,6972.4,779.5
+5,1,Four Square Onehunga,New World Metro Queen St,10425.4,1110.6
+5,2,New World Metro Queen St,Four Square Britomart,421.3,130.7
+5,3,Four Square Britomart,Warehouse,15779.0,1412.5
+6,0,Warehouse,New World Green Bay,7485.6,870.3
+6,1,New World Green Bay,Warehouse,7431.5,860.3
+7,0,Warehouse,New World Milford,26837.7,2363.1
+7,1,New World Milford,Warehouse,24226.3,2164.2
+8,0,Warehouse,New World Mt Albert,5152.7,737.1
+8,1,New World Mt Albert,Warehouse,5029.5,716.7
+9,0,Warehouse,New World Mt Roskill,939.9,200.4
+9,1,New World Mt Roskill,Warehouse,871.5,192.3
+10,0,Warehouse,New World New Lynn,6955.1,841.3
+10,1,New World New Lynn,Warehouse,6767.0,820.4
+11,0,Warehouse,New World Newmarket,15483.1,1395.1
+11,1,New World Newmarket,Warehouse,15410.4,1339.8
+12,0,Warehouse,New World Birkenhead,22490.3,2111.6
+12,1,New World Birkenhead,Warehouse,22795.3,2114.2
+13,0,Warehouse,New World Hobsonville,22742.8,1847.8
+13,1,New World Hobsonville,Warehouse,22770.7,1842.0
+14,0,Warehouse,New World Ormiston,24295.4,2207.4
+14,1,New World Ormiston,Warehouse,24957.1,2129.2
+15,0,Warehouse,New World Papakura,31135.2,2390.9
+15,1,New World Papakura,New World Southmall,8975.3,899.7
+15,2,New World Southmall,Warehouse,23430.3,1889.2
+16,0,Warehouse,New World Papatoetoe,17524.8,1502.3
+16,1,New World Papatoetoe,Warehouse,17525.6,1543.6
+17,0,Warehouse,Four Square Eden Terrace,13493.8,1244.4
+17,1,Four Square Eden Terrace,New World Point Chevalier,5019.1,534.3
+17,2,New World Point Chevalier,Warehouse,10814.1,984.7
+18,0,Warehouse,New World Howick,20971.2,2350.7
+18,1,New World Howick,Warehouse,32160.8,2799.2
+19,0,Warehouse,New World Stonefields,22338.5,2030.4
+19,1,New World Stonefields,Warehouse,21218.1,1900.9
+20,0,Warehouse,New World Victoria Park,14788.9,1435.6
+20,1,New World Victoria Park,Warehouse,14576.0,1355.8
+21,0,Warehouse,Pak 'n Save Albany,34724.9,2637.3
+21,1,Pak 'n Save Albany,Four Square Lancaster,12126.7,1283.1
+21,2,Four Square Lancaster,Warehouse,25856.3,2423.2
+22,0,Warehouse,Four Square Cockle Bay,22501.3,2535.8
+22,1,Four Square Cockle Bay,Pak 'n Save Botany,4952.0,496.4
+22,2,Pak 'n Save Botany,Warehouse,27850.3,2444.4
+23,0,Warehouse,Four Square Pakuranga Heights,17672.0,1923.9
+23,1,Four Square Pakuranga Heights,Pak 'n Save Clendon,19950.0,2071.6
+23,2,Pak 'n Save Clendon,Warehouse,20692.7,1885.7
+24,0,Warehouse,Pak 'n Save Glen Innes,17676.5,2087.2
+24,1,Pak 'n Save Glen Innes,Four Square St Heliers,3706.4,428.8
+24,2,Four Square St Heliers,Warehouse,23711.5,2243.5
+25,0,Warehouse,Four Square Remuera,19455.1,1764.9
+25,1,Four Square Remuera,Pak 'n Save Highland Park,13872.7,1496.0
+25,2,Pak 'n Save Highland Park,Warehouse,29851.1,2606.1
+26,0,Warehouse,Pak 'n Save Henderson,15892.1,1666.7
+26,1,Pak 'n Save Henderson,Warehouse,16367.3,1684.4
+27,0,Warehouse,Four Square Glen Eden,10647.1,1253.9
+27,1,Four Square Glen Eden,Pak 'n Save Lincoln Road,8645.3,1135.7
+27,2,Pak 'n Save Lincoln Road,Warehouse,16072.0,1444.5
+28,0,Warehouse,Pak 'n Save Mangere,13178.7,1188.0
+28,1,Pak 'n Save Mangere,Warehouse,11373.4,1131.6
+29,0,Warehouse,Four Square Ellerslie,19516.7,1684.8
+29,1,Four Square Ellerslie,Pak 'n Save Manukau,14168.5,1065.3
+29,2,Pak 'n Save Manukau,Warehouse,19808.5,1693.3
+30,0,Warehouse,Pak 'n Save Mt Albert,5036.3,662.2
+30,1,Pak 'n Save Mt Albert,Warehouse,4932.2,637.1
+31,0,Warehouse,Four Square Botany Junction,23485.0,2080.9
+31,1,Four Square Botany Junction,Pak 'n Save Ormiston,1392.7,252.4
+31,2,Pak 'n Save Ormiston,Warehouse,25234.4,2166.2
+32,0,Warehouse,Pak 'n Save Papakura,27347.7,2309.6
+32,1,Pak 'n Save Papakura,Warehouse,27543.9,2362.0
+33,0,Warehouse,Pak 'n Save Royal Oak,6247.0,785.5
+33,1,Pak 'n Save Royal Oak,Warehouse,6320.5,828.1
+34,0,Warehouse,Pak 'n Save Wairau Road,25148.3,2192.9
+34,1,Pak 'n Save Wairau Road,Four Square Fair Price Henderson,23797.8,1879.5
+34,2,Four Square Fair Price Henderson,Warehouse,17957.9,1653.3
+35,0,Warehouse,Pak 'n Save Westgate,19260.7,1608.7
+35,1,Pak 'n Save Westgate,Four Square Hobsonville,5283.0,574.5
+35,2,Four Square Hobsonville,Warehouse,22824.9,1821.3
+36,0,Warehouse,New World Long Bay,40602.3,3066.6
+36,1,New World Long Bay,Four Square Torbay,1797.9,220.7
+36,2,Four Square Torbay,Warehouse,41207.6,3134.0
+37,0,Warehouse,New World Metro Shore City,22615.5,2159.6
+37,1,New World Metro Shore City,Pak 'n Save Sylvia Park,20384.8,1831.2
+37,2,Pak 'n Save Sylvia Park,Warehouse,23578.7,1915.0

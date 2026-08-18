@@ -4,12 +4,12 @@ import pandas as pd
 
 # Load data
 duration = pd.read_csv(
-    "Data/FoodstuffsDurations2026.csv",
+    "../InputCSV/FoodstuffsDurations2026.csv",
     index_col=0
 )
 
 demand = pd.read_csv(
-    "Data/PercentileDemand.csv",
+    "../InputCSV/PercentileDemand.csv",
     index_col=0
 )
 
@@ -154,7 +154,7 @@ def generate_all_routes(store_names):
 
 def save_routes_to_csv(
     routes,
-    filename="Data/saturday_routes.csv"
+    filename="InputCSV/saturday_routes.csv"
 ):
     data = []
 
@@ -178,7 +178,7 @@ all_routes = generate_all_routes(all_stores)
 
 saturday_routes = save_routes_to_csv(
     all_routes,
-    filename="Data/saturday_routes.csv"
+    filename="../InputCSV/saturday_routes.csv"
 )
 
 print(f"Generated {len(saturday_routes)} Saturday routes.")
