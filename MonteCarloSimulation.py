@@ -1,6 +1,7 @@
 import math
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 
 rng = np.random.default_rng(42)
 
@@ -9,7 +10,7 @@ TRUCK_CAP   = 16
 DEPOT       = 'Warehouse'      # must match the label used in the durations CSV
 TRAFFIC_MIN = 0.85
 TRAFFIC_MAX = 1.15
-
+plot_data = pd.DataFrame(columns=['Weekday base', 'Weekday shedding', 'Saturday base', 'Saturday shedding'])
 durations = pd.read_csv('InputCSV/FoodstuffsDurations2026.csv', index_col=0)
 
 # historical demand: stores as rows, one column per day
@@ -25,7 +26,7 @@ stores  = list(_demand.index)
 # guess, pandas reads 05/06/2026 as 5 June rather than 6 May and the split is
 # silently wrong. Also remove Monday public holiday
 _dates = pd.to_datetime(_demand.columns, format='%d/%m/%Y')
-_dow = _dates.dow
+_dow = _dates.dayofweek
 public_holiday = pd.Timestamp("2026-06-01")
 weekday_mask = (_dow <= 4) & (_dates != public_holiday)
 saturday_mask = (_dow == 5)
@@ -53,9 +54,10 @@ def route_travel_time(route):
     """Driving time for one route in seconds, Warehouse -> stops -> Warehouse.
     One traffic multiplier per trip. Excludes unloading."""
     path = [DEPOT] + route.split(' -> ') + [DEPOT]
-    secs = sum(durations.loc[path[i], path[i + 1]] for i in range(len(path) - 1))
-    return secs * rng.uniform(TRAFFIC_MIN, TRAFFIC_MAX)
-
+    return sum(
+        durations.loc[path[i], path[i+1]] * rng.uniform(TRAFFIC_MIN, TRAFFIC_MAX)
+        for i in range(len(path) - 1)
+    )
 
 def monte_carlo(routes, shed_stores, day_type='weekday', n=5000):
     """Run n simulated days. Returns a DataFrame of per-day costs."""
@@ -110,6 +112,8 @@ def run_all(n=5000):
         c  = df.cost
         se = c.std(ddof=1) / math.sqrt(n)
 
+        plot_data[label] = c
+
         rows.append({
             'Scenario':      label,
             'Mean':          c.mean(),
@@ -136,13 +140,19 @@ def show(table):
     out['P(lease)']    = out['P(lease)'].map('{:.1%}'.format)
     out['Mean leases'] = out['Mean leases'].map('{:.2f}'.format)
     print(out.to_string())
+    plt.boxplot(plot_data.values, tick_labels=plot_data.columns)
+    plt.title('Box Plot of Cost over different scenarios')
+    plt.ylabel('Cost (NZD)')
+    plt.show()
+
+
 
 
 if __name__ == '__main__':
     print(f'{len(stores)} stores, {len(pools["weekday"])} weekdays, '
           f'{len(pools["saturday"])} Saturdays\n')
 
-    table = run_all(n=5000)
+    table = run_all(n=1000)
     show(table)
 
     table.to_csv('simulation_results.csv')
