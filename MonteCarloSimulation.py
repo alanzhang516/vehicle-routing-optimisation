@@ -106,7 +106,15 @@ def run_all(n=5000):
         sol    = pd.read_csv(path)
         routes = list(sol['Route'])
         served = {s for r in routes for s in r.split(' -> ')}
-        shed   = set(stores) - served
+        if day_type == 'saturday':
+            active_stores = {
+                store for store in stores
+                if _demand.loc[store, saturday_mask].max() > 0
+            }
+        else:
+            active_stores = set(stores)
+
+        shed = active_stores - served
 
         df = monte_carlo(routes, shed, day_type, n=n)
         c  = df.cost
