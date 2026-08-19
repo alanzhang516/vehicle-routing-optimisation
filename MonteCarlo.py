@@ -1,6 +1,8 @@
 import math
 import numpy as np
 import pandas as pd
+import matplotlib
+matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 
 rng = np.random.default_rng(42)
@@ -64,6 +66,13 @@ def sample_demand(day_type='weekday'):
             sampled_day[store] = rng.choice(valid_values)
     return sampled_day.to_dict()
 
+def route_base_duration(route):
+    """Deterministic route length (no traffic multiplier), used only for
+    ranking routes into shifts — not for costing."""
+    path = [DEPOT] + route.split(' -> ') + [DEPOT]
+    return sum(
+        durations.loc[path[i], path[i+1]] for i in range(len(path) - 1)
+    )
 
 def route_travel_time(route, day_type='weekday', hour=8):
     """Driving time for one route in seconds, Warehouse -> stops -> Warehouse.
@@ -77,10 +86,14 @@ def route_travel_time(route, day_type='weekday', hour=8):
         durations.loc[path[i], path[i+1]] for i in range(len(path) - 1)
     )
 
-
 def monte_carlo(routes, shed_stores, day_type='weekday', n=5000):
     """Run n simulated days. Returns a DataFrame of per-day costs."""
     fixed = sum(1500 if "Pak 'n Save" in s else 800 for s in shed_stores)
+
+    if day_type == 'saturday':
+        first_hour, rest_hour = SHIFT_HOURS[1], SHIFT_HOURS[0]
+    else:
+        first_hour, rest_hour = SHIFT_HOURS[0], SHIFT_HOURS[1]
 
     results = []
     for _ in range(n):
@@ -88,10 +101,9 @@ def monte_carlo(routes, shed_stores, day_type='weekday', n=5000):
         total, leases, over_six = fixed, 0, 0
 
         for i, route in enumerate(routes):
-            hour    = SHIFT_HOURS[0] if i < FLEET_SIZE else SHIFT_HOURS[1]
+            hour    = first_hour if i < FLEET_SIZE else rest_hour
             pallets = sum(demand[s] for s in route.split(' -> '))
             travel  = route_travel_time(route, day_type, hour)
-
             # owned truck takes up to 16 pallets
             carried = min(pallets, TRUCK_CAP)
             hours   = (travel + carried * UNLOAD_SEC) / 3600
@@ -129,8 +141,10 @@ def run_all(n=5000):
     rows = []
     for label, (path, day_type) in SOLUTIONS.items():
         sol    = pd.read_csv(path)
-        routes = list(sol['Route'])
+        routes = sorted(sol['Route'], key=route_base_duration)
+
         served = {s for r in routes for s in r.split(' -> ')}
+
         if day_type == 'saturday':
             active_stores = {
                 store for store in stores
@@ -175,18 +189,37 @@ def show(table):
     out['P(lease)']    = out['P(lease)'].map('{:.1%}'.format)
     out['Mean leases'] = out['Mean leases'].map('{:.2f}'.format)
     print(out.to_string())
+
+def show_plots():
     plt.boxplot(plot_data.values, tick_labels=plot_data.columns)
     plt.title('Box Plot of Cost over different scenarios')
     plt.ylabel('Cost (NZD)')
     plt.show()
 
+    # Histogram per scenario, laid out in a 2x2 grid so distribution shape
+    # (skew, spikes, multi-modality from lease triggers, etc.) is visible.
+    fig, axes = plt.subplots(2, 2, figsize=(11, 8))  # removed sharex=True
+    for ax, col in zip(axes.flat, plot_data.columns):
+        data = plot_data[col].dropna()
+        n_bins = min(50, max(10, data.nunique()))
+        ax.hist(data, bins=n_bins, color='steelblue', edgecolor='white', linewidth=0.5)
+        ax.axvline(data.mean(), color='red', linestyle='--', linewidth=1,
+                   label=f'Mean = ${data.mean():,.0f}')
+        ax.set_title(col)
+        ax.set_xlabel('Cost (NZD)')
+        ax.set_ylabel('Frequency')
+        ax.legend(fontsize=8)
 
+    fig.suptitle('Histogram of Cost over different scenarios')
+    fig.tight_layout()
+    plt.show()
 if __name__ == '__main__':
     print(f'{len(stores)} stores, {len(pools["weekday"])} weekdays, '
           f'{len(pools["saturday"])} Saturdays\n')
 
-    table = run_all(n=2000)
+    table = run_all(n=1000)
     show(table)
+    show_plots()
 
     table.to_csv('simulation_results.csv')
     print('\nwritten to simulation_results.csv')
