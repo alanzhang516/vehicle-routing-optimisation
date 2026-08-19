@@ -1,0 +1,136 @@
+import math
+import numpy as np
+import pandas as pd
+
+rng = np.random.default_rng(42)
+
+UNLOAD_SEC  = 18 * 60
+TRUCK_CAP   = 16
+DEPOT       = 'Warehouse'      # must match the label used in the durations CSV
+TRAFFIC_MIN = 0.85
+TRAFFIC_MAX = 1.15
+
+durations = pd.read_csv('InputCSV/FoodstuffsDurations2026.csv', index_col=0)
+
+# historical demand: stores as rows, one column per day
+_demand = pd.read_csv('InputCSV/FoodstuffsDemand2026 (1).csv', index_col=0)
+stores  = list(_demand.index)
+
+# split the 56 days into weekdays and Saturdays.
+# dates are NZ format (day first), so the format is given explicitly - left to
+# guess, pandas reads 05/06/2026 as 5 June rather than 6 May and the split is
+# silently wrong.
+_dow  = pd.to_datetime(_demand.columns, format='%d/%m/%Y').dayofweek   # Mon=0 ... Sun=6
+pools = {
+    'weekday':  _demand.loc[:, _dow <= 4].to_numpy(dtype=int).T,      # days x stores
+    'saturday': _demand.loc[:, _dow == 5].to_numpy(dtype=int).T,
+}
+
+
+def sample_demand(day_type='weekday'):
+    """One simulated day -> {store: pallets} for all 55 stores.
+
+    Picks one historical day of the right type at random (with replacement)
+    and takes every store's pallet count from that day."""
+    pool = pools[day_type]
+    return dict(zip(stores, pool[rng.integers(len(pool))]))
+
+
+def route_travel_time(route):
+    """Driving time for one route in seconds, Warehouse -> stops -> Warehouse.
+    One traffic multiplier per trip. Excludes unloading."""
+    path = [DEPOT] + route.split(' -> ') + [DEPOT]
+    secs = sum(durations.loc[path[i], path[i + 1]] for i in range(len(path) - 1))
+    return secs * rng.uniform(TRAFFIC_MIN, TRAFFIC_MAX)
+
+
+def monte_carlo(routes, shed_stores, day_type='weekday', n=5000):
+    """Run n simulated days. Returns a DataFrame of per-day costs."""
+    fixed = sum(1500 if "Pak 'n Save" in s else 800 for s in shed_stores)
+
+    results = []
+    for _ in range(n):
+        demand = sample_demand(day_type)
+        total, leases = fixed, 0
+
+        for route in routes:
+            pallets = sum(demand[s] for s in route.split(' -> '))
+            travel  = route_travel_time(route)
+
+            # owned truck takes up to 16 pallets
+            carried = min(pallets, TRUCK_CAP)
+            hours   = (travel + carried * UNLOAD_SEC) / 3600
+            total  += 220 * hours if hours <= 4 else 220 * 4 + 310 * math.ceil(hours - 4)
+
+            # anything left over goes to a wet-leased truck
+            left = pallets - carried
+            while left > 0:
+                carried = min(left, TRUCK_CAP)
+                hours   = (route_travel_time(route) + carried * UNLOAD_SEC) / 3600
+                total  += 1400 * math.ceil(hours / 2)
+                leases += 1
+                left   -= carried
+
+        results.append((total, leases))
+
+    return pd.DataFrame(results, columns=['cost', 'leases'])
+
+
+SOLUTIONS = {
+    'Weekday base':     ('WeekdaySolution/LpSolution_base.csv',     'weekday'),
+    'Weekday shedding': ('WeekdaySolution/LpSolution_shedding.csv', 'weekday'),
+    'Saturday base':    ('SatSolution/LpSolution_base_sat.csv',     'saturday'),
+    'Saturday shedding':('SatSolution/LpSolution_shedding_sat.csv', 'saturday'),
+}
+
+
+def run_all(n=5000):
+    """Run every scenario and return a summary table."""
+    rows = []
+    for label, (path, day_type) in SOLUTIONS.items():
+        sol    = pd.read_csv(path)
+        routes = list(sol['Route'])
+        served = {s for r in routes for s in r.split(' -> ')}
+        shed   = set(stores) - served
+
+        df = monte_carlo(routes, shed, day_type, n=n)
+        c  = df.cost
+        se = c.std(ddof=1) / math.sqrt(n)
+
+        rows.append({
+            'Scenario':      label,
+            'Mean':          c.mean(),
+            'CI low':        c.mean() - 1.96 * se,
+            'CI high':       c.mean() + 1.96 * se,
+            'Std dev':       c.std(ddof=1),
+            '5th pct':       c.quantile(0.05),
+            '95th pct':      c.quantile(0.95),
+            'Worst':         c.max(),
+            'Stores shed':   len(shed),
+            'P(lease)':      (df.leases > 0).mean(),
+            'Mean leases':   df.leases.mean(),
+        })
+
+    return pd.DataFrame(rows).set_index('Scenario')
+
+
+def show(table):
+    """Print the summary table with dollar and percent formatting."""
+    money = ['Mean', 'CI low', 'CI high', 'Std dev', '5th pct', '95th pct', 'Worst']
+    out = table.copy()
+    for col in money:
+        out[col] = out[col].map('${:,.0f}'.format)
+    out['P(lease)']    = out['P(lease)'].map('{:.1%}'.format)
+    out['Mean leases'] = out['Mean leases'].map('{:.2f}'.format)
+    print(out.to_string())
+
+
+if __name__ == '__main__':
+    print(f'{len(stores)} stores, {len(pools["weekday"])} weekdays, '
+          f'{len(pools["saturday"])} Saturdays\n')
+
+    table = run_all(n=5000)
+    show(table)
+
+    table.to_csv('simulation_results.csv')
+    print('\nwritten to simulation_results.csv')
