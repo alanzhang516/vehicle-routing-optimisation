@@ -25,7 +25,7 @@ stores  = list(_demand.index)
 # guess, pandas reads 05/06/2026 as 5 June rather than 6 May and the split is
 # silently wrong. Also remove Monday public holiday
 _dates = pd.to_datetime(_demand.columns, format='%d/%m/%Y')
-_dow = _dates.dow
+_dow = _dates.dayofweek
 public_holiday = pd.Timestamp("2026-06-01")
 weekday_mask = (_dow <= 4) & (_dates != public_holiday)
 saturday_mask = (_dow == 5)
@@ -104,7 +104,15 @@ def run_all(n=5000):
         sol    = pd.read_csv(path)
         routes = list(sol['Route'])
         served = {s for r in routes for s in r.split(' -> ')}
-        shed   = set(stores) - served
+        if day_type == 'saturday':
+            active_stores = {
+                store for store in stores
+                if _demand.loc[store, saturday_mask].max() > 0
+            }
+        else:
+            active_stores = set(stores)
+
+        shed = active_stores - served
 
         df = monte_carlo(routes, shed, day_type, n=n)
         c  = df.cost
