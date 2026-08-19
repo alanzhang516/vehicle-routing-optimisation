@@ -57,6 +57,17 @@ def prepPatterns(fileStores, routes):
     df = pd.read_csv(fileStores)
     #remove Warehouse from store delivery constraints
     df = df[df["Supermarket"] != "Warehouse"]
+    # Ensure stores with 0 demand are not required
+    demand = pd.read_csv(
+        "InputCSV/PercentileDemand.csv",
+        index_col=0
+    )
+
+    df = df[
+        df["Supermarket"].map(
+            demand["Saturday P75 (rounded)"]
+        ) > 0
+        ]
     # Set index for dictionary conversion
     df = df.set_index('Supermarket')
     # Add columns for use later
@@ -145,7 +156,7 @@ def createLP(routeNames, ownedCosts, leasedCosts, patterns, demands):
     for i in routeNames:
         prob += routeNormal[i] + routeLinfox[i] <= 1, f'One truck per route {i}'
 
-    prob.writeLP('Route_base.lp')
+    prob.writeLP('SatSolution/Route_base_sat.lp')
 
     prob.solve()
 
@@ -154,7 +165,7 @@ def createLP(routeNames, ownedCosts, leasedCosts, patterns, demands):
     print('Routing Costs = ', value(prob.objective))
 
     # Save solution as CSV
-    saveToCSV(prob, value(prob.objective), "WeekdaySolution/LpSolution_base.csv")
+    saveToCSV(prob, value(prob.objective), "SatSolution/LpSolution_base_sat.csv")
 
 def createLPshedding(routeNames, ownedCosts, leasedCosts, patterns, demands):
     '''
@@ -222,7 +233,7 @@ def createLPshedding(routeNames, ownedCosts, leasedCosts, patterns, demands):
     maxStoresShed = int(np.floor(0.2 * len(storesList)))
     prob += lpSum(shedStore[i] for i in storesList) <= maxStoresShed, 'Max stores shed'
 
-    prob.writeLP('Route_Shedding.lp')
+    prob.writeLP('SatSolution/Route_Shedding_sat.lp')
 
     prob.solve()
 
@@ -244,12 +255,12 @@ def createLPshedding(routeNames, ownedCosts, leasedCosts, patterns, demands):
             })
     shed_output = pd.DataFrame(shed_data)
     shed_output.to_csv(
-        "ShedStores.csv",
+        "SatSolution/ShedStores_sat.csv",
         index=False
     )
 
     # Save overall solution as CSV
-    saveToCSV(prob, value(prob.objective), "WeekdaySolution/LpSolution_shedding.csv")
+    saveToCSV(prob, value(prob.objective), "SatSolution/LpSolution_shedding_sat.csv")
 
 def saveToCSV(solution, objectiveValue, fileName = 'LpSolution.csv'):
 
@@ -292,7 +303,7 @@ def saveToCSV(solution, objectiveValue, fileName = 'LpSolution.csv'):
     output.to_csv(fileName, index=False)
 
 
-routes = prepCosts('routes.csv')
+routes = prepCosts('InputCSV/saturday_routes.csv')
 stores, demands = prepPatterns('InputCSV/FoodstuffsLocations.csv', routes)
 
 # Get the names and costs of each route

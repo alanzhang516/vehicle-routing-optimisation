@@ -1,20 +1,20 @@
-Route,Truck
-Pak 'n Save Albany -> New World Milford -> New World Metro Shore City -> New World Devonport,Owned
-Four Square Britomart -> New World Metro Queen St -> New World Victoria Park -> New World Birkenhead,Owned
-Pak 'n Save Royal Oak -> Four Square Eden Terrace -> New World Mt Albert,Owned
-New World Mt Roskill -> Pak 'n Save Mangere,Owned
-Four Square Pakuranga Heights -> Four Square Cockle Bay -> New World Botany -> New World Ormiston,Owned
-New World Albany -> Four Square Torbay -> New World Long Bay -> New World Browns Bay,Owned
-New World Papakura -> Pak 'n Save Papakura,Owned
-Pak 'n Save Manukau -> New World Papatoetoe,Owned
-Pak 'n Save Lincoln Road -> New World Point Chevalier,Owned
-New World Newmarket -> New World Remuera -> Four Square Remuera -> New World Eastridge,Owned
-New World Southmall -> Pak 'n Save Clendon,Owned
-Four Square Onehunga -> Pak 'n Save Sylvia Park -> New World Stonefields,Owned
-Four Square Ellerslie -> Pak 'n Save Glen Innes -> Four Square St Heliers,Owned
-Four Square Fair Price Henderson -> Pak 'n Save Henderson -> Four Square Glen Eden,Owned
-New World Green Bay -> New World New Lynn -> Pak 'n Save Mt Albert,Owned
-Pak 'n Save Ormiston -> Four Square Botany Junction,Owned
-Pak 'n Save Westgate -> New World Hobsonville -> Four Square Hobsonville,Owned
-Pak 'n Save Highland Park -> New World Howick -> Pak 'n Save Botany,Owned
-Four Square Lancaster -> Pak 'n Save Wairau Road,Owned
+Route,Truck,Objective
+Four Square Britomart -> New World Metro Queen St -> New World Victoria Park -> New World Birkenhead,Owned,17193.032777777782
+Four Square Pakuranga Heights -> New World Botany -> New World Ormiston,Owned,17193.032777777782
+Pak 'n Save Royal Oak -> Four Square Eden Terrace -> New World Mt Albert,Owned,17193.032777777782
+New World Mt Roskill -> Pak 'n Save Mangere,Owned,17193.032777777782
+New World Long Bay -> Four Square Torbay -> New World Browns Bay -> New World Albany,Owned,17193.032777777782
+New World Papakura -> Pak 'n Save Papakura,Owned,17193.032777777782
+Pak 'n Save Manukau -> New World Papatoetoe,Owned,17193.032777777782
+Pak 'n Save Lincoln Road -> New World Point Chevalier,Owned,17193.032777777782
+New World Newmarket -> New World Remuera -> Four Square Remuera -> New World Eastridge,Owned,17193.032777777782
+New World Southmall -> Pak 'n Save Clendon,Owned,17193.032777777782
+Four Square Onehunga -> Pak 'n Save Sylvia Park -> New World Stonefields,Owned,17193.032777777782
+New World Green Bay -> New World New Lynn -> Pak 'n Save Mt Albert,Owned,17193.032777777782
+Four Square Ellerslie -> Pak 'n Save Glen Innes -> Four Square St Heliers,Owned,17193.032777777782
+Four Square Fair Price Henderson -> Pak 'n Save Henderson -> Four Square Glen Eden,Owned,17193.032777777782
+Pak 'n Save Westgate -> New World Hobsonville -> Four Square Hobsonville,Owned,17193.032777777782
+Pak 'n Save Highland Park -> New World Howick -> Pak 'n Save Botany,Owned,17193.032777777782
+Pak 'n Save Ormiston -> Four Square Botany Junction,Owned,17193.032777777782
+Pak 'n Save Albany -> New World Milford -> New World Metro Shore City -> New World Devonport,Owned,17193.032777777782
+Four Square Lancaster -> Pak 'n Save Wairau Road,Owned,17193.032777777782

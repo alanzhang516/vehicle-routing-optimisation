@@ -30,8 +30,11 @@ time_between = (1/3) * 60 * 60
 
 demand_column = "Saturday P75 (rounded)"
 
-all_stores = duration.index.tolist()
-all_stores.remove("Warehouse")
+all_stores = [
+    store for store in duration.index
+    if store != "Warehouse"
+    and demand.loc[store, demand_column] > 0
+]
 
 
 def calculate_route_time(orders):
@@ -82,16 +85,17 @@ def calculate_neighbours(anchor):
     filtered_list = duration.loc[anchor] < time_between
     neighbours = filtered_list.index[filtered_list].tolist()
 
-    return neighbours
+    neighbours = [
+        store for store in neighbours
+        if store in all_stores
+    ]
 
+    return neighbours
 
 def brute_force_route(anchor):
     global demand_debug
 
     neighbours = calculate_neighbours(anchor)
-
-    if "Warehouse" in neighbours:
-        neighbours.remove("Warehouse")
 
     # This matches the weekday code and generates up to four-store routes
     route_length = min(
