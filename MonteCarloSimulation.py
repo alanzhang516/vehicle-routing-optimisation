@@ -13,27 +13,40 @@ TRAFFIC_MAX = 1.15
 durations = pd.read_csv('InputCSV/FoodstuffsDurations2026.csv', index_col=0)
 
 # historical demand: stores as rows, one column per day
-_demand = pd.read_csv('InputCSV/FoodstuffsDemand2026 (1).csv', index_col=0)
+_demand = pd.read_csv('InputCSV/FoodstuffsDemand2026.csv', index_col=0)
+# clean known outliers
+_demand.at["Four Square Ellerslie", "3/06/2026"] = np.nan
+_demand.at["Pak 'n Save Henderson", "10/06/2026"] = np.nan
+
 stores  = list(_demand.index)
 
 # split the 56 days into weekdays and Saturdays.
 # dates are NZ format (day first), so the format is given explicitly - left to
 # guess, pandas reads 05/06/2026 as 5 June rather than 6 May and the split is
-# silently wrong.
-_dow  = pd.to_datetime(_demand.columns, format='%d/%m/%Y').dayofweek   # Mon=0 ... Sun=6
+# silently wrong. Also remove Monday public holiday
+_dates = pd.to_datetime(_demand.columns, format='%d/%m/%Y')
+_dow = _dates.dow
+public_holiday = pd.Timestamp("2026-06-01")
+weekday_mask = (_dow <= 4) & (_dates != public_holiday)
+saturday_mask = (_dow == 5)
 pools = {
-    'weekday':  _demand.loc[:, _dow <= 4].to_numpy(dtype=int).T,      # days x stores
-    'saturday': _demand.loc[:, _dow == 5].to_numpy(dtype=int).T,
+    'weekday': _demand.loc[:, weekday_mask].T,
+    'saturday': _demand.loc[:, saturday_mask].T,
 }
-
-
 def sample_demand(day_type='weekday'):
     """One simulated day -> {store: pallets} for all 55 stores.
 
     Picks one historical day of the right type at random (with replacement)
     and takes every store's pallet count from that day."""
     pool = pools[day_type]
-    return dict(zip(stores, pool[rng.integers(len(pool))]))
+    # randomly choose one historical day
+    sampled_day = pool.iloc[rng.integers(len(pool))].copy()
+    # If that day contains a removed outlier, replace only that store's value
+    for store in sampled_day.index:
+        if pd.isna(sampled_day[store]):
+            valid_values = pool[store].dropna()
+            sampled_day[store] = rng.choice(valid_values)
+    return sampled_day.to_dict()
 
 
 def route_travel_time(route):
