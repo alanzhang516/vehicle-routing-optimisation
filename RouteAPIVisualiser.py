@@ -10,7 +10,7 @@ coords = coords.to_numpy().tolist()
 
 client = ors.Client(key="eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6IjVkZjhlYTIzYTdiZjQ0ZDZhMjY3ODBkOWIyNmE2MDk4IiwiaCI6Im11cm11cjY0In0=")
 
-routes_data = pd.read_csv("WeekdaySolution/LpSolution_base.csv")
+routes_data = pd.read_csv("SatSolution/LpSolution_base_sat.csv")
 routes_string = routes_data.Route
 
 m = folium.Map(location=list(reversed(coords[2])), zoom_start=10)
@@ -105,6 +105,6 @@ pd.DataFrame(route_summary_rows).to_csv('route_durations_summary.csv', index=Fal
 
 pd.DataFrame(leg_rows).to_csv('route_durations_legs.csv', index=False)
 
-map_file = "temp_map.html"
+map_file = "Saturday_map.html"
 m.save(map_file)
 webbrowser.open(map_file)

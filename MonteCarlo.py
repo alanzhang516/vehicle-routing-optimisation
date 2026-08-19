@@ -49,7 +49,6 @@ pools = {
     'saturday': _demand.loc[:, saturday_mask].T,
 }
 
-
 def sample_demand(day_type='weekday'):
     """One simulated day -> {store: pallets} for all 55 stores.
 

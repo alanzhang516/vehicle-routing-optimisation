@@ -1,39 +1,20 @@
 route_id,route,num_stops,total_distance_m,total_duration_s
-0,New World Albany,3,70193.7,5356.4
-1,New World Botany,3,54028.0,4791.7
-2,New World Browns Bay,3,75418.0,5784.799999999999
-3,New World Devonport,3,56207.4,5508.1
-4,New World Remuera -> New World Eastridge,4,44010.5,4279.9
-5,Four Square Onehunga -> New World Metro Queen St -> Four Square Britomart,5,33598.1,3433.3
-6,New World Green Bay,3,14917.1,1730.6
-7,New World Milford,3,51064.0,4527.299999999999
-8,New World Mt Albert,3,10182.2,1453.8000000000002
-9,New World Mt Roskill,3,1811.4,392.70000000000005
-10,New World New Lynn,3,13722.1,1661.6999999999998
-11,New World Newmarket,3,30893.5,2734.8999999999996
-12,New World Birkenhead,3,45285.6,4225.799999999999
-13,New World Hobsonville,3,45513.5,3689.8
-14,New World Ormiston,3,49252.5,4336.6
-15,New World Papakura -> New World Southmall,4,63540.8,5179.8
-16,New World Papatoetoe,3,35050.4,3045.8999999999996
-17,Four Square Eden Terrace -> New World Point Chevalier,4,29327.0,2763.4
-18,New World Howick,3,53132.0,5149.9
-19,New World Stonefields,3,43556.6,3931.3
-20,New World Victoria Park,3,29364.9,2791.3999999999996
-21,Pak 'n Save Albany -> Four Square Lancaster,4,72707.9,6343.6
-22,Four Square Cockle Bay -> Pak 'n Save Botany,4,55303.6,5476.6
-23,Four Square Pakuranga Heights -> Pak 'n Save Clendon,4,58314.7,5881.2
-24,Pak 'n Save Glen Innes -> Four Square St Heliers,4,45094.4,4759.5
-25,Four Square Remuera -> Pak 'n Save Highland Park,4,63178.9,5867.0
-26,Pak 'n Save Henderson,3,32259.4,3351.1000000000004
-27,Four Square Glen Eden -> Pak 'n Save Lincoln Road,4,35364.4,3834.1000000000004
-28,Pak 'n Save Mangere,3,24552.1,2319.6
-29,Four Square Ellerslie -> Pak 'n Save Manukau,4,53493.7,4443.4
-30,Pak 'n Save Mt Albert,3,9968.5,1299.3000000000002
-31,Four Square Botany Junction -> Pak 'n Save Ormiston,4,50112.1,4499.5
-32,Pak 'n Save Papakura,3,54891.6,4671.6
-33,Pak 'n Save Royal Oak,3,12567.5,1613.6
-34,Pak 'n Save Wairau Road -> Four Square Fair Price Henderson,4,66904.0,5725.7
-35,Pak 'n Save Westgate -> Four Square Hobsonville,4,47368.6,4004.5
-36,New World Long Bay -> Four Square Torbay,4,83607.8,6421.299999999999
-37,New World Metro Shore City -> Pak 'n Save Sylvia Park,4,66579.0,5905.8
+0,Four Square Britomart -> New World Metro Queen St -> New World Victoria Park -> New World Birkenhead,6,49511.3,5036.0
+1,Four Square Pakuranga Heights -> New World Botany -> New World Ormiston,5,50961.0,5083.0
+2,Pak 'n Save Royal Oak -> Four Square Eden Terrace -> New World Mt Albert,5,23368.7,2932.5
+3,New World Mt Roskill -> Pak 'n Save Mangere,4,24677.8,2361.1
+4,New World Long Bay -> Four Square Torbay -> New World Browns Bay -> New World Albany,6,85237.9,6906.0
+5,New World Papakura -> Pak 'n Save Papakura,4,60506.3,5005.3
+6,Pak 'n Save Manukau -> New World Papatoetoe,4,40439.8,3588.1
+7,Pak 'n Save Lincoln Road -> New World Point Chevalier,4,36174.7,3314.8
+8,New World Newmarket -> New World Remuera -> Four Square Remuera -> New World Eastridge,6,45075.0,4610.4
+9,New World Southmall -> Pak 'n Save Clendon,4,48271.3,4273.4
+10,Four Square Onehunga -> Pak 'n Save Sylvia Park -> New World Stonefields,5,40708.9,4170.1
+11,New World Green Bay -> New World New Lynn -> Pak 'n Save Mt Albert,5,19168.7,2485.4
+12,Four Square Ellerslie -> Pak 'n Save Glen Innes -> Four Square St Heliers,5,53418.0,5267.200000000001
+13,Four Square Fair Price Henderson -> Pak 'n Save Henderson -> Four Square Glen Eden,5,36524.4,4092.2999999999997
+14,Pak 'n Save Westgate -> New World Hobsonville -> Four Square Hobsonville,5,47528.9,4063.0
+15,Pak 'n Save Highland Park -> New World Howick -> Pak 'n Save Botany,5,53155.5,5386.8
+16,Pak 'n Save Ormiston -> Four Square Botany Junction,4,49850.1,4452.3
+17,Pak 'n Save Albany -> New World Milford -> New World Metro Shore City -> New World Devonport,6,81351.7,7525.9
+18,Four Square Lancaster -> Pak 'n Save Wairau Road,4,56251.5,5215.9
