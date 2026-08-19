@@ -8,8 +8,9 @@ rng = np.random.default_rng(42)
 UNLOAD_SEC  = 18 * 60
 TRUCK_CAP   = 16
 DEPOT       = 'Warehouse'      # must match the label used in the durations CSV
-TRAFFIC_MIN = 0.85
-TRAFFIC_MAX = 1.15
+TRAFFIC_MIN = 1
+TRAFFIC_MAX = 1.5
+
 plot_data = pd.DataFrame(columns=['Weekday base', 'Weekday shedding', 'Saturday base', 'Saturday shedding'])
 durations = pd.read_csv('InputCSV/FoodstuffsDurations2026.csv', index_col=0)
 
@@ -54,9 +55,10 @@ def route_travel_time(route):
     """Driving time for one route in seconds, Warehouse -> stops -> Warehouse.
     One traffic multiplier per trip. Excludes unloading."""
     path = [DEPOT] + route.split(' -> ') + [DEPOT]
-    return sum(
-        durations.loc[path[i], path[i+1]] * rng.uniform(TRAFFIC_MIN, TRAFFIC_MAX)
-        for i in range(len(path) - 1)
+    mult = rng.uniform(TRAFFIC_MIN, TRAFFIC_MAX)
+
+    return mult * sum(
+        durations.loc[path[i], path[i+1]] for i in range(len(path) - 1)
     )
 
 def monte_carlo(routes, shed_stores, day_type='weekday', n=5000):
@@ -153,14 +155,11 @@ def show(table):
     plt.ylabel('Cost (NZD)')
     plt.show()
 
-
-
-
 if __name__ == '__main__':
     print(f'{len(stores)} stores, {len(pools["weekday"])} weekdays, '
           f'{len(pools["saturday"])} Saturdays\n')
 
-    table = run_all(n=1000)
+    table = run_all(n=2000)
     show(table)
 
     table.to_csv('simulation_results.csv')
