@@ -66,7 +66,7 @@ def monte_carlo(routes, shed_stores, day_type='weekday', n=5000):
     results = []
     for _ in range(n):
         demand = sample_demand(day_type)
-        total, leases = fixed, 0
+        total, leases, over_six = fixed, 0, 0
 
         for route in routes:
             pallets = sum(demand[s] for s in route.split(' -> '))
@@ -75,6 +75,8 @@ def monte_carlo(routes, shed_stores, day_type='weekday', n=5000):
             # owned truck takes up to 16 pallets
             carried = min(pallets, TRUCK_CAP)
             hours   = (travel + carried * UNLOAD_SEC) / 3600
+            if hours > 6:
+                over_six += 1
             total  += 220 * hours if hours <= 4 else 220 * 4 + 310 * math.ceil(hours - 4)
 
             # anything left over goes to a wet-leased truck
@@ -82,13 +84,15 @@ def monte_carlo(routes, shed_stores, day_type='weekday', n=5000):
             while left > 0:
                 carried = min(left, TRUCK_CAP)
                 hours   = (route_travel_time(route) + carried * UNLOAD_SEC) / 3600
+                if hours > 6:
+                    over_six += 1
                 total  += 1400 * math.ceil(hours / 2)
                 leases += 1
                 left   -= carried
 
-        results.append((total, leases))
+        results.append((total, leases, over_six))
 
-    return pd.DataFrame(results, columns=['cost', 'leases'])
+    return pd.DataFrame(results, columns=['cost', 'leases', 'over_six'])
 
 
 SOLUTIONS = {
@@ -134,6 +138,8 @@ def run_all(n=5000):
             'Stores shed':   len(shed),
             'P(lease)':      (df.leases > 0).mean(),
             'Mean leases':   df.leases.mean(),
+            'P(over 6h)':    (df.over_six > 0).mean(),
+            'Mean no of over 6h': df.over_six.mean()
         })
 
     return pd.DataFrame(rows).set_index('Scenario')
