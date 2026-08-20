@@ -22,13 +22,42 @@ _tf = {
     'weekday':  pd.read_csv('InputCSV/traffic_factor_weekday.csv',  index_col='Hour'),
     'saturday': pd.read_csv('InputCSV/traffic_factor_saturday.csv', index_col='Hour'),
 }
+SHIFT_WINDOWS = {
+    8:  range(8, 14),   # 8 am to before 2 pm
+    14: range(14, 20),  # 2 pm to before 8 pm
+}
+
 _lognorm = {}
+
 for _day, _t in _tf.items():
-    for _h, _row in _t.iterrows():
-        _m, _s = _row['Mean'], _row['SD']
-        _m = _m - 1
-        _sig = np.sqrt(np.log(1 + (_s / _m) ** 2))
-        _lognorm[(_day, _h)] = (np.log(_m) - _sig ** 2 / 2, _sig)
+    for _start, _hours in SHIFT_WINDOWS.items():
+        _rows = _t.loc[list(_hours)]
+
+        # Combined mean and variance across the shift
+        _mean_total = _rows['Mean'].mean()
+
+        _var_total = (
+            (_rows['SD'] ** 2 + _rows['Mean'] ** 2).mean()
+            - _mean_total ** 2
+        )
+
+        _sd_total = np.sqrt(max(_var_total, 0))
+
+        # Model the additional delay above the baseline factor of 1
+        _delay_mean = _mean_total - 1
+
+        if _delay_mean <= 0:
+            raise ValueError(
+                f'Traffic factor mean must exceed 1 for {_day}, shift {_start}'
+            )
+
+        _sig = np.sqrt(
+            np.log(1 + (_sd_total / _delay_mean) ** 2)
+        )
+
+        _mu = np.log(_delay_mean) - _sig ** 2 / 2
+
+        _lognorm[(_day, _start)] = (_mu, _sig)
 
 # historical demand: stores as rows, one column per day
 _demand = pd.read_csv('InputCSV/FoodstuffsDemand2026.csv', index_col=0)
