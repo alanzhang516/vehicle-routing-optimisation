@@ -10,7 +10,7 @@ rng = np.random.default_rng(42)
 UNLOAD_SEC  = 18 * 60
 TRUCK_CAP   = 16
 DEPOT       = 'Warehouse'      # must match the label used in the durations CSV
-FLEET_SIZE  = 20               # routes 0-19 depart 8am, the rest depart 2pm
+FLEET_SIZE  = 20               # longest 20 routes go in the less congested time slot
 SHIFT_HOURS = (8, 14)
 
 plot_data = pd.DataFrame(columns=['Weekday base', 'Weekday shedding', 'Saturday base', 'Saturday shedding'])
@@ -26,6 +26,7 @@ _lognorm = {}
 for _day, _t in _tf.items():
     for _h, _row in _t.iterrows():
         _m, _s = _row['Mean'], _row['SD']
+        _m = _m - 1
         _sig = np.sqrt(np.log(1 + (_s / _m) ** 2))
         _lognorm[(_day, _h)] = (np.log(_m) - _sig ** 2 / 2, _sig)
 
@@ -80,7 +81,7 @@ def route_travel_time(route, day_type='weekday', hour=8):
     TomTom mean and SD for that day type and departure hour."""
     path = [DEPOT] + route.split(' -> ') + [DEPOT]
     mu, sigma = _lognorm[(day_type, hour)]
-    mult = rng.lognormal(mu, sigma)
+    mult = 1 + rng.lognormal(mu, sigma)
 
     return mult * sum(
         durations.loc[path[i], path[i+1]] for i in range(len(path) - 1)
