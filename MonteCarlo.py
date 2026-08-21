@@ -121,9 +121,13 @@ def monte_carlo(routes, shed_stores, day_type='weekday', n=5000):
     fixed = sum(1500 if "Pak 'n Save" in s else 800 for s in shed_stores)
 
     if day_type == 'saturday':
-        first_hour, rest_hour = SHIFT_HOURS[1], SHIFT_HOURS[0]
+        more_congested = SHIFT_HOURS[1]
+        less_congested = SHIFT_HOURS[0]
     else:
-        first_hour, rest_hour = SHIFT_HOURS[0], SHIFT_HOURS[1]
+        more_congested = SHIFT_HOURS[0]
+        less_congested = SHIFT_HOURS[1]
+
+    cutoff = max(0, len(routes) - FLEET_SIZE)
 
     results = []
     for _ in range(n):
@@ -131,7 +135,10 @@ def monte_carlo(routes, shed_stores, day_type='weekday', n=5000):
         total, leases, over_six = fixed, 0, 0
 
         for i, route in enumerate(routes):
-            hour    = first_hour if i < FLEET_SIZE else rest_hour
+            if i < cutoff:
+                hour = more_congested
+            else:
+                hour = less_congested
             pallets = sum(demand[s] for s in route.split(' -> '))
             travel  = route_travel_time(route, day_type, hour)
             # owned truck takes up to 16 pallets
