@@ -104,17 +104,23 @@ def route_base_duration(route):
         durations.loc[path[i], path[i+1]] for i in range(len(path) - 1)
     )
 
-def route_travel_time(route, day_type='weekday', hour=8):
-    """Driving time for one route in seconds, Warehouse -> stops -> Warehouse.
-    One traffic multiplier per trip, drawn from the lognormal fitted to the
-    TomTom mean and SD for that day type and departure hour."""
+def route_travel_time(route, mult):
+    """Driving time for one route in seconds, Warehouse -> stops -> Warehouse,
+    using a supplied traffic multiplier."""
     path = [DEPOT] + route.split(' -> ') + [DEPOT]
-    mu, sigma = _lognorm[(day_type, hour)]
-    mult = 1 + rng.lognormal(mu, sigma)
 
     return mult * sum(
         durations.loc[path[i], path[i+1]] for i in range(len(path) - 1)
     )
+def sample_traffic(day_type):
+    """Generate one traffic multiplier for each shift on one simulated day."""
+    traffic = {}
+
+    for hour in SHIFT_HOURS:
+        mu, sigma = _lognorm[(day_type, hour)]
+        traffic[hour] = 1 + rng.lognormal(mu, sigma)
+
+    return traffic
 
 def monte_carlo(routes, shed_stores, day_type='weekday', n=5000):
     """Run n simulated days. Returns a DataFrame of per-day costs."""
@@ -132,6 +138,7 @@ def monte_carlo(routes, shed_stores, day_type='weekday', n=5000):
     results = []
     for _ in range(n):
         demand = sample_demand(day_type)
+        traffic = sample_traffic(day_type)
         total, leases, over_six = fixed, 0, 0
 
         for i, route in enumerate(routes):
@@ -140,7 +147,7 @@ def monte_carlo(routes, shed_stores, day_type='weekday', n=5000):
             else:
                 hour = less_congested
             pallets = sum(demand[s] for s in route.split(' -> '))
-            travel  = route_travel_time(route, day_type, hour)
+            travel  = route_travel_time(route, traffic[hour])
             # owned truck takes up to 16 pallets
             carried = min(pallets, TRUCK_CAP)
             hours   = (travel + carried * UNLOAD_SEC) / 3600
@@ -152,8 +159,8 @@ def monte_carlo(routes, shed_stores, day_type='weekday', n=5000):
             left = pallets - carried
             while left > 0:
                 carried = min(left, TRUCK_CAP)
-                hours   = (route_travel_time(route, day_type, hour)
-                           + carried * UNLOAD_SEC) / 3600
+                hours = (route_travel_time(route, traffic[hour])
+                         + carried * UNLOAD_SEC) / 3600
                 if hours > 6:
                     over_six += 1
                 total  += 1400 * math.ceil(hours / 2)
