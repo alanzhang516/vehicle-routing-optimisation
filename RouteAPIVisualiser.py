@@ -105,6 +105,6 @@ pd.DataFrame(route_summary_rows).to_csv('route_durations_summary.csv', index=Fal
 
 pd.DataFrame(leg_rows).to_csv('route_durations_legs.csv', index=False)
 
-map_file = "Saturday_shedding_map.html"
+map_file = "OpenSourceRoutes Maps/Saturday_shedding_map.html"
 m.save(map_file)
 webbrowser.open(map_file)

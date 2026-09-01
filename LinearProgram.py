@@ -262,7 +262,7 @@ def createLPshedding(routeNames, ownedCosts, leasedCosts, patterns, demands):
     # Save overall solution as CSV
     saveToCSV(prob, value(prob.objective), "SatSolution/LpSolution_shedding_sat.csv")
 
-def saveToCSV(solution, objectiveValue, fileName = 'LpSolution.csv'):
+def saveToCSV(solution, objectiveValue, fileName = 'LpSolution_base.csv'):
 
     '''
     Saves the output of the linear program to a CSV file
